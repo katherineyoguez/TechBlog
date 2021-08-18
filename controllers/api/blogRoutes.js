@@ -30,11 +30,11 @@ router.get('/', (req, res) => {
         ]
 
     })
-    .then(dbBlogData => res.json(dbBlogData.reverse()))
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(dbBlogData => res.json(dbBlogData.reverse()))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 
 });
 
@@ -53,8 +53,26 @@ router.put('/:id', withAuth, (req, res) => {
         }
         res.json(dbPostData);
     })
-    .catch(err => {
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+router.delete('/:id', withAuth, (req, res) => {
+    Post.destroy({
+        where: {
+            id: req.params.id
+        }
+    }).then(dbBlogData => {
+        if (!dbBlogData) {
+            res.status(404).json({ message: 'No post found with this id' });
+            return;
+        }
+        res.json(dbBlogData);
+    }).catch(err => {
         console.log(err);
         res.status(500).json(err);
     });
-})
+});
+
+module.exports = router;

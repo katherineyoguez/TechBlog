@@ -23,8 +23,8 @@ router.get('/', (req, res) => {
                 }
             ]
         })
-        .then(blogData => {
-            const posts = blogData.map(post => post.get({ plain: true }));
+        .then(dbBlogData => {
+            const posts = dbBlogData.map(post => post.get({ plain: true }));
             res.render('homepage', { posts, loggedIn: req.session.loggedIn });
         })
         .catch(err => {
@@ -70,12 +70,12 @@ router.get('/blog/:id', (req, res) => {
                 }
             ]
         })
-        .then(blogData => {
-            if (!blogData) {
+        .then(dbBlogData => {
+            if (!dbBlogData) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
-            const post = blogData.get({ plain: true });
+            const post = dbBlogData.get({ plain: true });
             console.log(post);
             res.render('single-post', { blog, loggedIn: req.session.loggedIn });
 
@@ -111,12 +111,12 @@ router.get('/blog-comments', (req, res) => {
                 }
             ]
         })
-        .then(blogData => {
-            if (!blogData) {
+        .then(dbBlogData => {
+            if (!dbBlogData) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
-            const post = blogData.get({ plain: true });
+            const post = dbBlogData.get({ plain: true });
 
             res.render('blog-comments', { blog, loggedIn: req.session.loggedIn });
         })

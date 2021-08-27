@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const { Blog, Comment, User } = require('../models');
+const { Post, Comment, User } = require('../models');
 const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
-    Blog.findAll({
+    Post.findAll({
             where: {
                 user_id: req.session.user_id
             },
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
              ],
             include: [{
                 model: Comment,
-                attributes: ['id', 'comment_text', 'blog_id', 'create_at', 'user_id'],
+                attributes: ['id', 'comment_text', 'post_id', 'create_at', 'user_id'],
                 include: {
                     model: User,
                     attributes: ['username']
@@ -28,8 +28,8 @@ router.get('/', async (req, res) => {
 
         ]
     })
-        .then(dbBlogData => {
-            const post = dbBlogData.map(post => post.get({ plain: true }));
+        .then(dbPostData => {
+            const post = dbPostData.map(post => post.get({ plain: true }));
             res.render('dashboard', { post, loggedIn: true });
 
         })
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/edit/:id', withAuth, (req, res) => {
-    Blog.findOne({
+    Post.findOne({
         where: {
             id: req.params.id
         },
@@ -55,7 +55,7 @@ router.get('/edit/:id', withAuth, (req, res) => {
         },
         {
             model: Comment,
-            attributes: ['id', 'comment_text', 'blog_id', 'user_id', 'create_at'],
+            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'create_at'],
             include: {
                 model: User,
                 attributes: ['username']
@@ -63,13 +63,13 @@ router.get('/edit/:id', withAuth, (req, res) => {
         }
         ]
     })
-        .then(dbBlogData => {
-            if (!dbBlogData) {
+        .then(dbPostData => {
+            if (!dbPostData) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
 
-            const post = dbBlogData.get({ plain: true });
+            const post = dbPostData.get({ plain: true });
             res.render('edit-post', { post, loggedIn: true });
         })
         .catch(err => {

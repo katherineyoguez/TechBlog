@@ -1,8 +1,8 @@
 const sequelize = require('../config/connection');
-const { Blog, User, Comment } = require('../models');
+const { Post, User, Comment } = require('../models');
 const router = require('express').Router();
 router.get('/', (req, res) => {
-    Blog.findAll({
+    Post.findAll({
             attributes: [
                 'id',
                 'title',
@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
             ],
             include: [{
                     model: Comment,
-                    attributes: ['id', 'comment_text', 'blog_id', 'user_id', 'create_at'],
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'create_at'],
                     include: {
                         model: User,
                         attributes: ['username']
@@ -23,8 +23,8 @@ router.get('/', (req, res) => {
                 }
             ]
         })
-        .then(dbBlogData => {
-            const posts = dbBlogData.map(post => post.get({ plain: true }));
+        .then(dbPostData => {
+            const posts = dbPostData.map(post => post.get({ plain: true }));
             res.render('homepage', { posts, loggedIn: req.session.loggedIn });
         })
         .catch(err => {
@@ -45,8 +45,8 @@ router.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-router.get('/blog/:id', (req, res) => {
-    Blog.findOne({
+router.get('/post/:id', (req, res) => {
+    Post.findOne({
             where: {
                 id: req.params.id
             },
@@ -58,7 +58,7 @@ router.get('/blog/:id', (req, res) => {
             ],
             include: [{
                     model: Comment,
-                    attributes: ['id', 'comment_text', 'blog_id', 'user_id', 'create_at'],
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'create_at'],
                     include: {
                         model: User,
                         attributes: ['username']
@@ -70,14 +70,14 @@ router.get('/blog/:id', (req, res) => {
                 }
             ]
         })
-        .then(dbBlogData => {
-            if (!dbBlogData) {
+        .then(dbPostData => {
+            if (!dbPostData) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
-            const post = dbBlogData.get({ plain: true });
+            const post = dbPostData.get({ plain: true });
             console.log(post);
-            res.render('single-post', { blog, loggedIn: req.session.loggedIn });
+            res.render('single-post', { post, loggedIn: req.session.loggedIn });
 
 
         })
@@ -86,8 +86,8 @@ router.get('/blog/:id', (req, res) => {
             res.status(500).json(err);
         });
 });
-router.get('/blog-comments', (req, res) => {
-    Blog.findOne({
+router.get('/post-comments', (req, res) => {
+    Post.findOne({
             where: {
                 id: req.params.id
             },
@@ -99,7 +99,7 @@ router.get('/blog-comments', (req, res) => {
             ],
             include: [{
                     model: Comment,
-                    attributes: ['id', 'comment_text', 'blog_id', 'user_id', 'create_at'],
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'create_at'],
                     include: {
                         model: User,
                         attributes: ['username']
@@ -111,14 +111,14 @@ router.get('/blog-comments', (req, res) => {
                 }
             ]
         })
-        .then(dbBlogData => {
-            if (!dbBlogData) {
+        .then(dbPostData => {
+            if (!dbPostData) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
-            const post = dbBlogData.get({ plain: true });
+            const post = dbPostData.get({ plain: true });
 
-            res.render('blog-comments', { blog, loggedIn: req.session.loggedIn });
+            res.render('post-comments', { post, loggedIn: req.session.loggedIn });
         })
         .catch(err => {
             console.log(err);

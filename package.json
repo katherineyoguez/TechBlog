@@ -11,9 +11,9 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@github.com:jakekelly44/tech-blog.git"
+        "url": "git@github.com:katherineyoguez/techblog.git"
     },
-    "author": "Jake Kelly",
+    "author": "Katherine Yoguez",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/katherineyoguez/techblog/issues"

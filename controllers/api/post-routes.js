@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { Post, User, Comment } = require('../..models');
-const sequelize = require('../..config/connections');
+const { Post, User, Comment } = require('../../models');
+const sequelize = require('../../config/connection');
 const withAuth = require('../../utils/auth');
 
 router.get('/', (req, res) => {
@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
 router.put('/:id', withAuth, (req, res) => {
     Post.update({
         title: req.body.title,
-        content: req.body.constent
+        content: req.body.content
     }, {
         where: {
             id: req.params.id
